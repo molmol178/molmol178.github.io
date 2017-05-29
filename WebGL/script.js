@@ -34,10 +34,10 @@ onload = function(){
 
     var m = new matIV();
 
-    var mMatrix = m.indentity(m.create());
-    var vMatrix = m.indentity(m.create());
-    var pMatrix = m.indentity(m.create());
-    var mvpMatrix = m.indentity(m.create());
+    var mMatrix = m.identity(m.create());
+    var vMatrix = m.identity(m.create());
+    var pMatrix = m.identity(m.create());
+    var mvpMatrix = m.identity(m.create());
 
     //ビュー座標変換行列
     m.lookAt([0.0, 1.0, 3.0], [0, 0, 0], [0, 1, 0], vMatrix);
@@ -47,7 +47,7 @@ onload = function(){
 
     //各行列をかけ合わせて座標変換行列を完成させる
     m.multiply(pMatrix, vMatrix, mvpMatrix);
-    m.pultiply(mvpMatrix, mMatrix, mvpMatrix);
+    m.multiply(mvpMatrix, mMatrix, mvpMatrix);
     
     var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
     gl.uniformMatrix4fv(uniLocation, false, mvpMatix);
@@ -77,7 +77,7 @@ onload = function(){
         if(gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
             return shader;
         }else{
-            alart(gl.getShaderInfoLog(shader));
+            alert(gl.getShaderInfoLog(shader));
         }
     }
 
@@ -90,11 +90,11 @@ onload = function(){
 
         gl.linkProgram(program);
 
-        if(gl.getProgramParameter(program, gl.LINKSTATUS)){
+        if(gl.getProgramParameter(program, gl.LINK_STATUS)){
             gl.useProgram(program);
             return program;
         }else{
-            alart(gl.getParameterInfoLog(program));
+            alert(gl.getParameterInfoLog(program));
         }
 
     }
