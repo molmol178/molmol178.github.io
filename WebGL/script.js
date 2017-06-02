@@ -6,7 +6,7 @@ onload = function(){
 
     var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
-    gl.clearColor(0.0,0.0,0.0,1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -43,14 +43,14 @@ onload = function(){
     m.lookAt([0.0, 1.0, 3.0], [0, 0, 0], [0, 1, 0], vMatrix);
 
     //プロジェクション変換行列
-    m.perspective(90, canvas.width / canvaas.height, 0.1, 100, pMatrix);
+    m.perspective(90, canvas.width / canvas.height, 0.1, 100, pMatrix);
 
     //各行列をかけ合わせて座標変換行列を完成させる
     m.multiply(pMatrix, vMatrix, mvpMatrix);
     m.multiply(mvpMatrix, mMatrix, mvpMatrix);
     
     var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
-    gl.uniformMatrix4fv(uniLocation, false, mvpMatix);
+    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.flush();
 
