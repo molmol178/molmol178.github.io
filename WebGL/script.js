@@ -15,31 +15,38 @@ onload = function(){
 
     var prg = create_program(v_shader, f_shader);
 
+    //頂点シェーダのattribute修飾子とリンク
     var attLocation = new Array();
     attLocation[0] = gl.getAttribLocation(prg, 'position');
-    attLocation[1] = gl.getAttribLocation(prg, 'color');
+    attLocation[1] = gl.getAttribLocation(prg, 'normal');
+    attLocation[2] = gl.getAttribLocation(prg, 'color');
 
     //attributeの要素数（この場合xyzの三要素）
     var attStride = Array();
     attStride[0] = 3;
-    attStride[1] = 4;
+    attStride[1] = 3;
+    attStride[2] = 4;
 
     var torusData = torus(32, 32, 1.0, 2.0);
     var position = torusData[0];
-    var color = torusData[1];
-    var index = torusData[2];
-
+    var normal = torusData[1];
+    var color = torusData[2];
+    var index = torusData[3];
 
     var position_vbo = create_vbo(position);
+    var normal_vbo = create_vbo(normal);
     var color_vbo = create_vbo(color);
 
-    set_attribute([position_vbo, color_vbo], attLocation, attStride);
+    set_attribute([position_vbo, normal_vbo, color_vbo], attLocation, attStride);
 
     var ibo = create_ibo(index);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
 
-    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
-
+    //頂点シェーダのuniform修飾子とリンク
+    var uniLocation = newArray();
+    unilocation[0] = gl.getuniformlocation(prg, 'mvpmatrix');
+    unilocation[1] = gl.getuniformlocation(prg, 'invMatrix');
+    unilocation[2] = gl.getuniformlocation(prg, 'lightDirection');
 
     var m = new matIV();
 
@@ -48,6 +55,7 @@ onload = function(){
     var pMatrix = m.identity(m.create());
     var tmpMatrix = m.identity(m.create());
     var mvpMatrix = m.identity(m.create());
+    var invMatrix = m.identity(m.create());
 
     //ビュー座標変換行列
     m.lookAt([0.0, 0.0, 20.0], [0, 0, 0], [0, 1, 0], vMatrix);
@@ -56,6 +64,7 @@ onload = function(){
     //各行列をかけ合わせて座標変換行列を完成させる
     m.multiply(pMatrix, vMatrix, tmpMatrix);
 
+    var lightDirection = [-0.5, 0.5, 0.5];
     var count = 0;
 
     gl.enable(gl.CULL_FACE);
@@ -72,12 +81,15 @@ onload = function(){
     // var x = Math.cos(rad);
     // var y = Math.sin(rad);
     
-    //一つ目
     m.identity(mMatrix);
     m.rotate(mMatrix, rad, [0, 1, 1], mMatrix);
     // m.translate(mMatrix, [x, y + 1.0, 0.0], mMatrix);
     m.multiply(tmpMatrix, mMatrix, mvpMatrix);
-    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
+    m.inverse(mMatrix, invMatrix);
+
+    gl.uniformMatrix4fv(uniLocation[0], false, mvpMatrix);
+    gl.uniformMatrix4fv(uniLocation[1], false, invMatrix);
+    gl.uniform3fv(uniLocation[2], lightDirection);
     
     gl.drawElements(gl.TRIANGLES, index.length, gl.UNSIGNED_SHORT, 0);
 
@@ -162,7 +174,7 @@ onload = function(){
     // orad: 原点からパイプの中心までの距離
     function torus(row, column, irad, orad){
         // pos: 座標　col: 色　idx: インデックス
-        var pos = new Array(), col = new Array(), idx = new Array();
+        var pos = new Array(), col = new Array(), idx = new Array(), nor = new Array();
         for (var i = 0; i <= row; i++){
             var r = Math.PI * 2 / row * i;
             var rr = Math.cos(r);
@@ -173,7 +185,10 @@ onload = function(){
                 var tx = (rr * irad + orad) * Math.cos(tr);
                 var ty = ry * irad;
                 var tz = (rr * irad + orad) * Math.sin(tr);
+                var rx = rr * Math.cos(tr);
+                var rz = rr * Math.sin(tr);
                 pos.push(tx, ty, tz);
+                nor.push(rx, ry, rz);
                 var tc = hsva(360 / column * ii, 1, 1, 1);
                 col.push(tc[0], tc[1], tc[2], tc[3]);
             }
@@ -185,9 +200,10 @@ onload = function(){
                 idx.push(r + column + 1, r + column + 2, r + 1);
             }
         }
-        return [pos, col, idx];
+        return [pos, nor, col, idx];
     }
 
+    // hsv2rgb
     function hsva(h, s, v, a){
         if (s > 1 || v > 1 || a > 1){return;}
         var th = h % 360;
