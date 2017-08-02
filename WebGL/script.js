@@ -21,8 +21,8 @@ onload = function(){
     attLocation[1] = gl.getAttribLocation(prg, 'normal');
     attLocation[2] = gl.getAttribLocation(prg, 'color');
 
-    //attributeの要素数（この場合xyzの三要素）
-    var attStride = Array();
+    //attributeの要素数
+    var attStride = new Array();
     attStride[0] = 3;
     attStride[1] = 3;
     attStride[2] = 4;
@@ -43,10 +43,10 @@ onload = function(){
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
 
     //頂点シェーダのuniform修飾子とリンク
-    var uniLocation = newArray();
-    unilocation[0] = gl.getuniformlocation(prg, 'mvpmatrix');
-    unilocation[1] = gl.getuniformlocation(prg, 'invMatrix');
-    unilocation[2] = gl.getuniformlocation(prg, 'lightDirection');
+    var uniLocation = new Array();
+    uniLocation[0] = gl.getUniformLocation(prg, 'mvpMatrix');
+    uniLocation[1] = gl.getUniformLocation(prg, 'invMatrix');
+    uniLocation[2] = gl.getUniformLocation(prg, 'lightDirection');
 
     var m = new matIV();
 
@@ -67,9 +67,9 @@ onload = function(){
     var lightDirection = [-0.5, 0.5, 0.5];
     var count = 0;
 
-    gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.CULL_FACE);
 
 (function(){
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -174,7 +174,8 @@ onload = function(){
     // orad: 原点からパイプの中心までの距離
     function torus(row, column, irad, orad){
         // pos: 座標　col: 色　idx: インデックス
-        var pos = new Array(), col = new Array(), idx = new Array(), nor = new Array();
+        var pos = new Array(), nor = new Array(), 
+            col = new Array(), idx = new Array();
         for (var i = 0; i <= row; i++){
             var r = Math.PI * 2 / row * i;
             var rr = Math.cos(r);
