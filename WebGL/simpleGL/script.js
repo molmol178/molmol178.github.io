@@ -64,7 +64,7 @@ onload = function(){
     //各行列をかけ合わせて座標変換行列を完成させる
     m.multiply(pMatrix, vMatrix, tmpMatrix);
 
-    var lightDirection = [-0.5, 0.5, 0.5];
+    var lightDirection = [-0.5, 0.1, 0.5];
     var count = 0;
 
     gl.enable(gl.DEPTH_TEST);
