@@ -51,7 +51,7 @@ function addMarker(marker, data, pin_color){
     marker.bindInfoWindow('\
         <img src='+ data.display_url +' width=50%><br>\
         2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br>\
-        <div style="word-wrap: break-word; white-space:pre-wrap; position:fix; overflow-y:scroll; webkit-overflow-scrolling: touch;">' + data.text + '</div>\
+        <div style="word-wrap: break-word; white-space:pre-wrap; overflow-scrolling : touch; -webkit-overflow-scrolling: touch;">' + data.text + '</div>\
     ');
     return marker;
 }
