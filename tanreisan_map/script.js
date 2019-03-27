@@ -48,7 +48,11 @@ function addMarker(marker, data, pin_color){
         , {icon: new Y.Icon(pin_color)}
         , {title: data.shopname}
     );
-    marker.bindInfoWindow('<img src='+ data.display_url +' width=20%><br>2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br><div style="word-wrap: break-word; white-space:pre-wrap;">' + data.text + '</div>');
+    marker.bindInfoWindow('\
+        <img src='+ data.display_url +' width=50%><br>\
+        2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br>\
+        <div style="word-wrap: break-word; white-space:pre-wrap; position:fix; overflow-y:scroll; webkit-overflow-scrolling: touch;">' + data.text + '</div>\
+    ');
     return marker;
 }
 
@@ -75,4 +79,5 @@ window.onload = function(){
     ymap.drawMap(new Y.LatLng(35.6719483, 139.7413908), 15, Y.LayerSetId.NORMAL);
     // });
     loadJson("src/add_shopname_tanreisan.json", parseJson, "success to load json \n\n\n", ymap);
+
 }
