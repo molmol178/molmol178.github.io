@@ -24,18 +24,32 @@ function parseJson(message, ymap){
     var markers = [];
     var marker;
     for(var i = 1; i <= len; i++){
-        // console.log("show json \n\n\n" + data[i].geocode.lng);
-        marker = new Y.Marker(new Y.LatLng(data[i].geocode.lat, data[i].geocode.lng),{title: data[i].shopname});
-        marker.bindInfoWindow('<img src='+ data[i].display_url +' width=20%><br>tanreisanのLike数：'+ data[i].edge_media_preview_like.count + '<br><pre>' + data[i].text + '</pre>');
-        marker.bind('click', markerClicked(data[i]));
+        var item = data[i].edge_media_preview_like.count;
+        if (item < 300 && item >= 0){
+            marker =  addMarker(marker, data[i], 'src/pin_purple.png');
+        }else if (item < 400 && item >= 300){
+            marker = addMarker(marker, data[i], 'src/pin_blue.png');
+        }else if (item < 600 && item >= 400){
+            marker = addMarker(marker, data[i], 'src/pin_sky.png');
+        }else if (item < 800 && item >= 600){
+            marker = addMarker(marker, data[i], 'src/pin_pink.png');
+        }else {
+            marker = addMarker(marker, data[i], 'src/pin_red.png');
+        }
         markers.push(marker);
     }
     ymap.addFeatures(markers);
 }
 
-function markerClicked(data){
-    // alert(data.shopname);
-    // todo: マーカーを押したときの動作をどうするか．テキストを含めるとパソコンじゃないと見れない．店名と画像だけだすとか．モーダルウィンドウを仕込んどくとか．スマホでみたときでもうまく見れるようにしたい．
+
+function addMarker(marker, data, pin_color){
+    marker = new Y.Marker(
+        new Y.LatLng(data.geocode.lat, data.geocode.lng)
+        , {icon: new Y.Icon(pin_color)}
+        , {title: data.shopname}
+    );
+    marker.bindInfoWindow('<img src='+ data.display_url +' width=20%><br>2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br><div style="word-wrap: break-word; white-space:pre-wrap;">' + data.text + '</div>');
+    return marker;
 }
 
 window.onload = function(){
@@ -53,13 +67,12 @@ window.onload = function(){
     ymap.addControl(new Y.SliderZoomControlVertical());
     ymap.addControl(new Y.HomeControl());
      
-    navigator.geolocation.watchPosition(function(position){
+    // navigator.geolocation.watchPosition(function(position){
      
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        var latlng = new Y.LatLng(lat, lng);
-
-        ymap.drawMap(latlng, 15, Y.LayerSetId.NORMAL);
-    });
+    //     var lat = position.coords.latitude;
+    //     var lng = position.coords.longitude;
+    //     var latlng = new Y.LatLng(lat, lng);
+    ymap.drawMap(new Y.LatLng(35.6719483, 139.7413908), 15, Y.LayerSetId.NORMAL);
+    // });
     loadJson("src/add_shopname_tanreisan.json", parseJson, "success to load json \n\n\n", ymap);
 }
