@@ -53,6 +53,7 @@ function addMarker(marker, data, pin_color){
         2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br><br>\
         '+ data.shopname + '<br>\
         <a href="https://www.instagram.com/p/' + data.shortcode + '">tanreisanの投稿へ</a><br>\
+        <a href="https://www.google.com/maps?q=loc:' + data.geocode.lat+ ','+ data.geocode.lng + '">google mapで表示</a><br>\
          ');
     return marker;
 }
@@ -72,11 +73,6 @@ window.onload = function(){
     ymap.addControl(new Y.SliderZoomControlVertical());
     ymap.addControl(new Y.HomeControl());
      
-    // navigator.geolocation.watchPosition(function(position){
-     
-    //     var lat = position.coords.latitude;
-    //     var lng = position.coords.longitude;
-    //     var latlng = new Y.LatLng(lat, lng);
     ymap.drawMap(new Y.LatLng(35.6719483, 139.7413908), 15, Y.LayerSetId.NORMAL);
     // });
     loadJson("src/add_shopname_tanreisan.json", parseJson, "success to load json \n\n\n", ymap);
