@@ -53,7 +53,7 @@ function addMarker(marker, data, pin_color){
         2019/3/25時点でのtanreisanのLike数：'+ data.edge_media_preview_like.count + '<br><br>\
         '+ data.shopname + '<br>\
         <a href="https://www.instagram.com/p/' + data.shortcode + '">tanreisanの投稿へ</a><br>\
-        <a href="https://www.google.com/maps?q=loc:' + data.geocode.lat+ ','+ data.geocode.lng + '">google mapで表示</a><br>\
+        <a href="https://www.google.com/maps?q=' + data.geocode.lat+ ','+ data.geocode.lng + '">google mapで表示</a><br>\
          ');
     return marker;
 }
